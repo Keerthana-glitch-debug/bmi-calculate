@@ -1,13 +1,569 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>bmi-calculate</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
-</html>
+React To-Do List
+import { useState } from "react";
+
+export default function App() {
+  const [task, setTask] = useState("");
+  const [list, setList] = useState([]);
+
+  return (
+    <div>
+      <h2>To-Do List</h2>
+      <input value={task} onChange={e => setTask(e.target.value)} />
+      <button onClick={() => {
+        if (task.trim()) {
+          setList([...list, task]);
+          setTask("");
+        }
+      }}>Add</button>
+
+      {list.map((t, i) => (
+        <p key={i}>{t}
+          <button onClick={() => setList(list.filter((_, j) => i !== j))}>
+            Delete
+          </button>
+        </p>
+      ))}
+    </div>
+  );
+}
+
+
+2. React Calculator
+import { useState } from "react";
+
+export default function App() {
+  const [a, setA] = useState("");
+  const [b, setB] = useState("");
+  const [r, setR] = useState("");
+
+  return (
+    <div>
+      <h2>Calculator</h2>
+      <input type="number" placeholder="Number 1" onChange={e => setA(e.target.value)} />
+      <input type="number" placeholder="Number 2" onChange={e => setB(e.target.value)} />
+
+      <button onClick={() => setR(Number(a) + Number(b))}>+</button>
+      <button onClick={() => setR(Number(a) - Number(b))}>-</button>
+      <button onClick={() => setR(Number(a) * Number(b))}>*</button>
+      <button onClick={() => setR(Number(b) !== 0 ? Number(a) / Number(b) : "Cannot divide by zero")}>/</button>
+
+      <h3>Result: {r}</h3>
+    </div>
+  );
+}
+
+
+3. React Quiz App
+import { useState } from "react";
+
+export default function App() {
+  const [q, setQ] = useState(0);
+  const [score, setScore] = useState(0);
+  const [done, setDone] = useState(false);
+
+  const questions = [
+    { question: "React is a?", options: ["Library", "Database"], answer: "Library" },
+    { question: "Which hook stores state?", options: ["useState", "useHTML"], answer: "useState" }
+  ];
+
+  function check(option) {
+    if (option === questions[q].answer) setScore(score + 1);
+    if (q === questions.length - 1) setDone(true);
+    else setQ(q + 1);
+  }
+
+  return (
+    <div>
+      <h2>Quiz App</h2>
+      {done ? <h3>Score: {score}/2</h3> : <>
+        <h3>{questions[q].question}</h3>
+        {questions[q].options.map(o =>
+          <button key={o} onClick={() => check(o)}>{o}</button>
+        )}
+      </>}
+    </div>
+  );
+}
+
+
+4. React Notes App
+import { useState } from "react";
+
+export default function App() {
+  const [note, setNote] = useState("");
+  const [notes, setNotes] = useState([]);
+
+  return (
+    <div>
+      <h2>Notes App</h2>
+      <input value={note} onChange={e => setNote(e.target.value)} />
+      <button onClick={() => {
+        if (note.trim()) {
+          setNotes([...notes, note]);
+          setNote("");
+        }
+      }}>Add Note</button>
+
+      {notes.map((n, i) => <p key={i}>{n}
+        <button onClick={() => {
+          const edited = prompt("Edit note", n);
+          if (edited !== null) setNotes(notes.map((x, j) => j === i ? edited : x));
+        }}>Edit</button>
+      </p>)}
+    </div>
+  );
+}
+
+
+5. React Temperature Converter
+import { useState } from "react";
+
+export default function App() {
+  const [c, setC] = useState("");
+
+  return (
+    <div>
+      <h2>Temperature Converter</h2>
+      <input type="number" placeholder="Celsius"
+        value={c} onChange={e => setC(e.target.value)} />
+      <h3>Fahrenheit: {c === "" ? "" : (Number(c) * 9 / 5 + 32).toFixed(2)}</h3>
+    </div>
+  );
+}
+
+
+Formula: Fahrenheit = Celsius × 9/5 + 32.
+6. React Expense Tracker
+import { useState } from "react";
+
+export default function App() {
+  const [name, setName] = useState("");
+  const [amount, setAmount] = useState("");
+  const [expenses, setExpenses] = useState([]);
+
+  return (
+    <div>
+      <h2>Expense Tracker</h2>
+      <input placeholder="Expense name" value={name} onChange={e => setName(e.target.value)} />
+      <input type="number" placeholder="Amount" value={amount} onChange={e => setAmount(e.target.value)} />
+      <button onClick={() => {
+        if (name.trim() && amount !== "" && Number(amount) > 0) {
+          setExpenses([...expenses, { name, amount: Number(amount) }]);
+          setName(""); setAmount("");
+        }
+      }}>Add</button>
+
+      {expenses.map((e, i) => <p key={i}>{e.name}: ₹{e.amount}</p>)}
+      <h3>Total: ₹{expenses.reduce((s, e) => s + e.amount, 0)}</h3>
+    </div>
+  );
+}
+
+
+7. React Contact Book
+import { useState } from "react";
+
+export default function App() {
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [search, setSearch] = useState("");
+  const [contacts, setContacts] = useState([]);
+
+  return (
+    <div>
+      <h2>Contact Book</h2>
+      <input placeholder="Name" onChange={e => setName(e.target.value)} />
+      <input placeholder="Phone" onChange={e => setPhone(e.target.value)} />
+      <button onClick={() => {
+        if (name.trim() && phone.trim()) setContacts([...contacts, { name, phone }]);
+      }}>Add Contact</button>
+
+      <input placeholder="Search" onChange={e => setSearch(e.target.value)} />
+      {contacts.filter(c => c.name.toLowerCase().includes(search.toLowerCase()))
+        .map((c, i) => <p key={i}>{c.name} - {c.phone}</p>)}
+    </div>
+  );
+}
+
+
+8. React BMI Calculator
+import { useState } from "react";
+
+export default function App() {
+  const [weight, setWeight] = useState("");
+  const [height, setHeight] = useState("");
+
+  const bmi = Number(weight) / (Number(height) / 100) ** 2;
+
+  return (
+    <div>
+      <h2>BMI Calculator</h2>
+      <input type="number" placeholder="Weight in kg" onChange={e => setWeight(e.target.value)} />
+      <input type="number" placeholder="Height in cm" onChange={e => setHeight(e.target.value)} />
+      <h3>BMI: {weight && Number(weight) > 0 && height && Number(height) > 0 ? bmi.toFixed(2) : ""}</h3>
+    </div>
+  );
+}
+
+
+9. React News App
+import { useEffect, useState } from "react";
+
+export default function App() {
+  const [news, setNews] = useState([]);
+
+  useEffect(() => {
+    fetch("https://jsonplaceholder.typicode.com/posts?_limit=5")
+      .then(res => res.json())
+      .then(data => setNews(data))
+      .catch(() => setNews([]));
+  }, []);
+
+  return (
+    <div>
+      <h2>News App</h2>
+      {news.map(n => <p key={n.id}>
+        <b>{n.title}</b><br />
+        {n.body}
+      </p>)}
+    </div>
+  );
+}
+
+
+Note: Idhu practice-ku sample API posts; actual live news illa.
+10. React Dictionary App
+import { useState } from "react";
+
+export default function App() {
+  const [word, setWord] = useState("");
+  const [meaning, setMeaning] = useState("");
+
+  async function search() {
+    try {
+      const res = await fetch(
+        `https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`
+      );
+      const data = await res.json();
+      setMeaning(res.ok ? data[0].meanings[0].definitions[0].definition : "Word not found");
+    } catch {
+      setMeaning("Error fetching meaning");
+    }
+  }
+
+  return (
+    <div>
+      <h2>Dictionary</h2>
+      <input value={word} onChange={e => setWord(e.target.value)} />
+      <button onClick={search}>Search</button>
+      <p>{meaning}</p>
+    </div>
+  );
+}
+
+
+
+
+
+
+11. React Currency Converter
+import { useState } from "react";
+
+export default function App() {
+  const [rupees, setRupees] = useState("");
+
+  return (
+    <div>
+      <h2>Currency Converter</h2>
+      <input type="number" placeholder="Amount in INR"
+        onChange={e => setRupees(e.target.value)} />
+      <p>USD: {rupees === "" ? "" : (Number(rupees) / 85).toFixed(2)}</p>
+    </div>
+  );
+}
+
+
+Note: ₹85 per USD is a fixed example rate; live rate illa.
+12. React Recipe Finder
+import { useState } from "react";
+
+export default function App() {
+  const [food, setFood] = useState("");
+  const [recipes, setRecipes] = useState([]);
+
+  async function search() {
+    try {
+      const res = await fetch(
+        `https://www.themealdb.com/api/json/v1/1/search.php?s=${encodeURIComponent(food)}`
+      );
+      const data = await res.json();
+      setRecipes(data.meals || []);
+    } catch {
+      setRecipes([]);
+    }
+  }
+
+  return (
+    <div>
+      <h2>Recipe Finder</h2>
+      <input value={food} onChange={e => setFood(e.target.value)} />
+      <button onClick={search}>Search</button>
+      {recipes.map(r => <p key={r.idMeal}>{r.strMeal}</p>)}
+    </div>
+  );
+}
+
+
+13. React Book Finder
+import { useState } from "react";
+
+export default function App() {
+  const [book, setBook] = useState("");
+  const [books, setBooks] = useState([]);
+
+  async function search() {
+    try {
+      const res = await fetch(
+        `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(book)}`
+      );
+      const data = await res.json();
+      setBooks(data.items || []);
+    } catch {
+      setBooks([]);
+    }
+  }
+
+  return (
+    <div>
+      <h2>Book Finder</h2>
+      <input value={book} onChange={e => setBook(e.target.value)} />
+      <button onClick={search}>Search</button>
+      {books.map(b => <p key={b.id}>{b.volumeInfo.title}</p>)}
+    </div>
+  );
+}
+
+
+14. React Form Validation
+import { useState } from "react";
+
+export default function App() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [msg, setMsg] = useState("");
+
+  function submit(e) {
+    e.preventDefault();
+    if (!email.includes("@")) setMsg("Invalid email");
+    else if (password.length < 6) setMsg("Password minimum 6 characters");
+    else setMsg("Form submitted successfully");
+  }
+
+  return (
+    <div>
+      <h2>Login Form</h2>
+      <form onSubmit={submit}>
+        <input type="email" placeholder="Email" required
+          onChange={e => setEmail(e.target.value)} />
+        <input type="password" placeholder="Password" required
+          onChange={e => setPassword(e.target.value)} />
+        <button type="submit">Login</button>
+      </form>
+      <p>{msg}</p>
+    </div>
+  );
+}
+
+
+15. React Dark/Light Theme
+import { useState } from "react";
+
+export default function App() {
+  const [dark, setDark] = useState(false);
+
+  return (
+    <div style={{
+      background: dark ? "black" : "white",
+      color: dark ? "white" : "black",
+      padding: "30px"
+    }}>
+      <h2>Theme App</h2>
+      <button onClick={() => setDark(!dark)}>
+        Change Theme
+      </button>
+    </div>
+  );
+}
+
+
+16. React Counter App
+import { useState } from "react";
+
+export default function App() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <div>
+      <h2>Counter</h2>
+      <h1>{count}</h1>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+      <button onClick={() => setCount(count - 1)}>Decrement</button>
+      <button onClick={() => setCount(0)}>Reset</button>
+    </div>
+  );
+}
+
+
+17. React Age Calculator
+import { useState } from "react";
+
+export default function App() {
+  const [dob, setDob] = useState("");
+  const [age, setAge] = useState("");
+
+  function calculate() {
+    if (!dob) return;
+
+    const birth = new Date(dob);
+    const today = new Date();
+    let years = today.getFullYear() - birth.getFullYear();
+
+    if (
+      today.getMonth() < birth.getMonth() ||
+      (today.getMonth() === birth.getMonth() &&
+       today.getDate() < birth.getDate())
+    ) years--;
+
+    setAge(years >= 0 ? years : "Invalid date");
+  }
+
+  return (
+    <div>
+      <h2>Age Calculator</h2>
+      <input type="date" value={dob}
+        max={new Date().toISOString().split("T")[0]}
+        onChange={e => { setDob(e.target.value); setAge(""); }} />
+      <button onClick={calculate}>Calculate</button>
+      <h3>Age: {age}</h3>
+    </div>
+  );
+}
+
+
+18. React Calendar Picker
+import { useState } from "react";
+
+export default function App() {
+  const [date, setDate] = useState("");
+
+  return (
+    <div>
+      <h2>Calendar Picker</h2>
+      <input type="date" value={date}
+        onChange={e => setDate(e.target.value)} />
+      <h3>Selected Date: {date}</h3>
+    </div>
+  );
+}
+
+
+19. React Discount Calculator
+import { useState } from "react";
+
+export default function App() {
+  const [price, setPrice] = useState("");
+  const [discount, setDiscount] = useState("");
+
+  const valid = price !== "" && discount !== "" &&
+    Number(price) >= 0 && Number(discount) >= 0 &&
+    Number(discount) <= 100;
+
+  const saved = valid ? Number(price) * Number(discount) / 100 : 0;
+
+  return (
+    <div>
+      <h2>Discount Calculator</h2>
+      <input type="number" placeholder="Price"
+        onChange={e => setPrice(e.target.value)} />
+      <input type="number" placeholder="Discount %"
+        onChange={e => setDiscount(e.target.value)} />
+      <p>Discount: ₹{valid ? saved.toFixed(2) : ""}</p>
+      <h3>Final Price: ₹{valid ? (Number(price) - saved).toFixed(2) : ""}</h3>
+    </div>
+  );
+}
+
+
+20. React Online Shopping Bill Calculator
+import { useState } from "react";
+
+export default function App() {
+  const [price, setPrice] = useState("");
+  const [qty, setQty] = useState("");
+
+  const valid = price !== "" && qty !== "" &&
+    Number(price) >= 0 && Number(qty) >= 0;
+
+  const total = valid ? Number(price) * Number(qty) : 0;
+  const tax = total * 0.05;
+
+  return (
+    <div>
+      <h2>Shopping Bill</h2>
+      <input type="number" placeholder="Item Price"
+        onChange={e => setPrice(e.target.value)} />
+      <input type="number" placeholder="Quantity"
+        onChange={e => setQty(e.target.value)} />
+      <p>Subtotal: ₹{valid ? total.toFixed(2) : ""}</p>
+      <p>Tax (5%): ₹{valid ? tax.toFixed(2) : ""}</p>
+      <h3>Final Bill: ₹{valid ? (total + tax).toFixed(2) : ""}</h3>
+
+      git init
+git add .
+git commit -m "Initial commit"
+git branch -M main
+git remote add origin https://github.com/YOUR-USERNAME/YOUR-REPO.git
+git push -u origin main
+      jenkins:-- (call npm ci || call npm install
+call npm run build
+mkdir "C:\ProgramData\Jenkins\.jenkins\userContent\react-app"
+xcopy /E /I /Y "dist\*" "C:\ProgramData\Jenkins\.jenkins\userContent\react-app\"
+      npm install -g serve
+      cd C:\ProgramData\Jenkins\.jenkins\workspace\Trip Free Style\frontend\dist
+      serve -s . -l 8081)
+      pipeline:- (
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/YOUR-USERNAME/YOUR-REPO.git'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                bat 'npm install'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                bat 'npm run build'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'React successfully built!'
+        }
+        failure {
+            echo 'Build failed!'
+        }
+    }
+}
+)
+      
